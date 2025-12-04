@@ -37,15 +37,25 @@ int main()
     grid.push_back(line);
   }
 
+  std::vector<std::string> gridCpy = grid;
   int numRollsAccessible = 0;
+  int delta = 1; // to enter loop
 
-  for (int r = 0; r < grid.size(); r++)
-  {
-    for (int c = 0; c < grid[r].length(); c++)
+  while (delta != 0) {
+    delta=0;
+    for (int r = 0; r < grid.size(); r++)
     {
-      if (grid[r][c] != '@') continue;
-      if (lessThanFourNeighbors(r,c,grid)) numRollsAccessible++;
+      for (int c = 0; c < grid[r].length(); c++)
+      {
+        if (grid[r][c] != '@') continue;
+        if (lessThanFourNeighbors(r,c,grid)) {
+          gridCpy[r][c] = '.';
+          delta++;
+        }
+      }
     }
+    numRollsAccessible += delta;
+    grid = gridCpy;
   }
 
   std::cout << "Num rolls accessible: " << numRollsAccessible << std::endl;
