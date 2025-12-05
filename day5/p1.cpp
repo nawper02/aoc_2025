@@ -77,35 +77,57 @@ int main()
         continue;
       }
 
-      // are left or right in any of the ranges?
+      // are left or right in any of the ranges? there are four parent cases
       std::optional<int> pairIndexLeft = idInRange(idRangeStart, idRanges);
       std::optional<int> pairIndexRight = idInRange(idRangeEnd, idRanges);
-
-      // four parent cases
 
       // L and R in range
       if (pairIndexLeft && pairIndexRight)
       {
+        // L and R in same range: no need to add it
+        if (*pairIndexLeft == *pairIndexRight) continue;
 
+        // L and R in different ranges: extend first range to cover second range
+        else
+        {
+          idRanges[*pairIndexLeft].second = idRanges[*pairIndexRight].second;
+          // does this work if the two ranges are neighbors in idRanges? we erase (left,right] so that would be (2,3] which is just 3 and that should be fine?
+          idRanges.erase(idRanges.begin()+*pairIndexLeft+1, idRanges.end()+*pairIndexRight+1);
+        }
       }
 
       // neither L nor R in range
       if (!pairIndexLeft && !pairIndexRight)
       {
-
+        // find existing ranges contained by new range
+        std::vector<int> idxsToRemove;
+        for (int i = idRangeStart; i<= idRangeEnd; i++)
+        {
+          std::optional<int> idRangesIdx = idInRange(i, idRanges);
+          if (!idRangesIdx) continue;
+          else idxsToRemove.push_back(*idRangesIdx);
+        }
+        // remove them
+        idRanges.erase(/* how to erase a bunch of specific indexes? */);
       }
 
       // Only L in range
       if (pairIndexLeft)
       {
+        // extend pairIndexLeft range to cover idRangeStart to idRangeEnd
 
       }
 
       // only R in range
       if (pairIndexRight)
       {
+        // inspect id's from ? to ?
+
+        // extend pairIndexRight to cover new range regardless
 
       }
+
+      // look from idRangeStart to idRangeEnd, find and eliminate existing ranges covered so no overlaps.
 
     }
     else // now we are checking id's
